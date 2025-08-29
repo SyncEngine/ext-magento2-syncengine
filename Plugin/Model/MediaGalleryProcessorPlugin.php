@@ -250,7 +250,6 @@ class MediaGalleryProcessorPlugin extends MediaGalleryProcessor
                     ];
                 } else {
                     unset( $entry['content'] );
-                    unset( $entry['file'] );
                 }
 
                 $mediaGalleryEntries[$k] = $entry;
