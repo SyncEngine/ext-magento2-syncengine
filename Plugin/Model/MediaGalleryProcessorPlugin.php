@@ -110,7 +110,7 @@ class MediaGalleryProcessorPlugin extends MediaGalleryProcessor
      *
      * @return ImageContentInterface|null
      */
-    public function fetchImageContentFromUrl( $url )
+    public function fetchImageContentFromUrl( $url ): ?ImageContentInterface
     {
         if ( ! $this->syncengineData->isMediaGalleryApiPassUrlEnabled() ) {
             return null;
@@ -142,7 +142,7 @@ class MediaGalleryProcessorPlugin extends MediaGalleryProcessor
      *
      * @return ImageContentInterface|null
      */
-    public function fetchImageContentFromPath( $path )
+    public function fetchImageContentFromPath( $path ): ?ImageContentInterface
     {
         if ( ! $this->syncengineData->isMediaGalleryApiPassPathEnabled() ) {
             return null;
@@ -178,16 +178,16 @@ class MediaGalleryProcessorPlugin extends MediaGalleryProcessor
     /**
      * @param $path
      *
-     * @return ImageContentInterface|null|string
+     * @return ImageContentInterface|null
      */
-    public function fetchImageContent( $path_or_url )
+    public function fetchImageContent( $path_or_url ): ?ImageContentInterface
     {
         try {
             if ( ! pathinfo( $path_or_url, PATHINFO_EXTENSION ) ) {
-                return $path_or_url;
+                return null;
             }
         } catch ( \Exception $e ) {
-            return $path_or_url;
+            return null;
         }
 
         if ( ! str_starts_with( $path_or_url, 'http' ) ) {
