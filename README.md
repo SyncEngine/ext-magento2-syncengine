@@ -8,3 +8,4 @@ Magento 2 plugin to enhance integration for SyncEngine
 - [x] Connect to SyncEngine API from Magento admin configuration.
 - [x] Fetch automations and connections from SyncEngine and auto-map trigger blueprints to local Magento events.
 - [x] Dispatch mapped endpoints for Magento product, customer, and order create/update/delete events.
+- [x] Admin Trigger Debug page with trigger map refresh and recent dispatch/skip logs.
