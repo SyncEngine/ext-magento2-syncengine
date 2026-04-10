@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <syncengine_connector>
+            <general>
+                <enable>1</enable>
+            </general>
+            <api>
+                <version></version>
+            </api>
+            <triggers>
+                <enable>1</enable>
+                <map_ttl>300</map_ttl>
+            </triggers>
+            <media_gallery_api>
+                <skip_unchanged>1</skip_unchanged>
+                <pass_url>1</pass_url>
+                <pass_path>1</pass_path>
+                <base_path>pub/media/import</base_path>
+            </media_gallery_api>
+        </syncengine_connector>
+    </default>
+</config>
