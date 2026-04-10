@@ -32,9 +32,10 @@ class MagentoPlatformService extends AbstractPlatformService
         \Magento\Framework\Serialize\Serializer\Json $serializer,
         \Psr\Log\LoggerInterface $logger,
         private readonly StoreManagerInterface $storeManager,
-        private readonly Data $dataHelper
+        private readonly Data $dataHelper,
+        ?DispatchLogService $dispatchLogService = null
     ) {
-        parent::__construct($clientService, $dispatcher, $cache, $serializer, $logger);
+        parent::__construct($clientService, $dispatcher, $cache, $serializer, $logger, $dispatchLogService);
     }
 
     protected function getTriggerEvents(): array

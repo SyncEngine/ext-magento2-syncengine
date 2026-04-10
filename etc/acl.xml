@@ -7,6 +7,7 @@
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
                             <resource id="SyncEngine_Connector::config_syncengine_connector" title="SyncEngine Connector Configuration" sortOrder="10" />
+                            <resource id="SyncEngine_Connector::trigger_debug" title="SyncEngine Trigger Debug" sortOrder="20" />
                         </resource>
                     </resource>
                 </resource>

@@ -4,14 +4,22 @@ declare(strict_types=1);
 
 namespace SyncEngine\Connector\Service;
 
+use Magento\Framework\App\ObjectManager;
 use Psr\Log\LoggerInterface;
 
 class EndpointDispatcherService
 {
+    private DispatchLogService $dispatchLogService;
+
     public function __construct(
         private readonly ClientService $clientService,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        ?DispatchLogService $dispatchLogService = null
     ) {
+        // Keep this constructor backward-compatible with cached/generated DI metadata
+        // that may still pass only (ClientService, LoggerInterface).
+        $this->dispatchLogService = $dispatchLogService
+            ?? ObjectManager::getInstance()->get(DispatchLogService::class);
     }
 
     public function triggerEndpoints(array $endpoints, array $payload = [], array $meta = []): array
@@ -28,6 +36,8 @@ class EndpointDispatcherService
         foreach (array_values(array_filter(array_map('strval', $endpoints))) as $endpoint) {
             $result = $client->triggerEndpoint($endpoint, $payload);
             $results[$endpoint] = $result;
+
+            $this->dispatchLogService->add($source, $trigger, $endpoint, $payload, (array)$result, 'dispatched');
 
             $success = (bool)($result['success'] ?? true);
             $context = [

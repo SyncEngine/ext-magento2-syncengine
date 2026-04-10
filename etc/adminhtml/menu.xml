@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="SyncEngine_Connector::trigger_debug"
+             title="SyncEngine Trigger Debug"
+             module="SyncEngine_Connector"
+             sortOrder="90"
+             parent="Magento_Backend::system"
+             action="syncengine_connector/debug/index"
+             resource="SyncEngine_Connector::trigger_debug" />
+    </menu>
+</config>

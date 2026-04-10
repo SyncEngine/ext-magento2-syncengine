@@ -5,18 +5,25 @@ declare(strict_types=1);
 namespace SyncEngine\Connector\Service;
 
 use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\Serializer\Json;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractPlatformService
 {
+    private DispatchLogService $dispatchLogService;
+
     public function __construct(
         private readonly ClientService $clientService,
         private readonly EndpointDispatcherService $dispatcher,
         private readonly CacheInterface $cache,
         private readonly Json $serializer,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        ?DispatchLogService $dispatchLogService = null
     ) {
+        // Keep constructor compatible with stale generated DI metadata.
+        $this->dispatchLogService = $dispatchLogService
+            ?? ObjectManager::getInstance()->get(DispatchLogService::class);
     }
 
     public function getTriggerEndpointMap(bool $refresh = false): array
@@ -109,6 +116,15 @@ abstract class AbstractPlatformService
     {
         $endpoints = $this->getEndpointsForTrigger($trigger);
         if ($endpoints === []) {
+            $this->dispatchLogService->add(
+                $this->getSource(),
+                $trigger,
+                '',
+                $payload,
+                ['success' => false, 'error' => 'No mapped endpoints for trigger.'],
+                'skipped'
+            );
+
             return [];
         }
 
