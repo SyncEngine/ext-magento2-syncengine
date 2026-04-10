@@ -27,11 +27,20 @@
 
 namespace SyncEngine\Connector\Helper;
 
+use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 class Data extends AbstractHelper
 {
     const XML_CONFIG_PATH = 'syncengine_connector';
+
+    public function __construct(
+        Context $context,
+        private readonly EncryptorInterface $encryptor
+    ) {
+        parent::__construct($context);
+    }
 
     public function getConfig( $setting )
     {
@@ -43,6 +52,16 @@ class Data extends AbstractHelper
         return $this->getConfig( 'media_gallery_api/' . $setting );
     }
 
+    public function getApiConfig($setting)
+    {
+        return $this->getConfig('api/' . $setting);
+    }
+
+    public function getTriggerConfig($setting)
+    {
+        return $this->getConfig('triggers/' . $setting);
+    }
+
     public function isEnabled()
     {
         return $this->getConfig( 'general/enable' );
@@ -51,6 +70,52 @@ class Data extends AbstractHelper
     public function isMediaGalleryApiEnabled()
     {
         return $this->isMediaGalleryApiPassUrlEnabled() || $this->isMediaGalleryApiPassPathEnabled();
+    }
+
+    public function getApiHost(): string
+    {
+        return trim((string)$this->getApiConfig('host'));
+    }
+
+    public function getApiToken(): string
+    {
+        $rawToken = trim((string)$this->getApiConfig('token'));
+        if ($rawToken === '') {
+            return '';
+        }
+
+        try {
+            $decrypted = trim((string)$this->encryptor->decrypt($rawToken));
+            return $decrypted !== '' ? $decrypted : $rawToken;
+        } catch (\Throwable) {
+            return $rawToken;
+        }
+    }
+
+    public function getApiAuthHeader(): string
+    {
+        return trim((string)$this->getApiConfig('auth_header'));
+    }
+
+    public function getApiVersion(): int|bool
+    {
+        $version = trim((string)$this->getApiConfig('version'));
+        if ($version === '' || strtolower($version) === 'false' || $version === '0') {
+            return false;
+        }
+
+        return max(1, (int)$version);
+    }
+
+    public function isTriggerDispatchEnabled(): bool
+    {
+        return (bool)($this->isEnabled() && $this->getTriggerConfig('enable'));
+    }
+
+    public function getTriggerMapTtl(): int
+    {
+        $ttl = (int)$this->getTriggerConfig('map_ttl');
+        return $ttl > 0 ? $ttl : 300;
     }
 
     public function isMediaGalleryApiSkipUnchangedEnabled()

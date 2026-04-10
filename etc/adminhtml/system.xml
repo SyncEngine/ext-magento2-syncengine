@@ -16,6 +16,37 @@
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                 </field>
             </group>
+            <group id="api" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>SyncEngine API</label>
+                <field id="host" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>SyncEngine Host</label>
+                    <comment>Base URL of your SyncEngine instance, for example: https://syncengine.example.com</comment>
+                </field>
+                <field id="token" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>SyncEngine Token</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="auth_header" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Custom Auth Header</label>
+                    <comment>Leave empty to use Bearer Authorization. Example custom value: X-Token</comment>
+                </field>
+                <field id="version" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>API Version</label>
+                    <comment>Set to 1 for /api/v1 routes. Leave empty to use unversioned API routes.</comment>
+                </field>
+            </group>
+            <group id="triggers" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Trigger Dispatch</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Trigger Dispatch</label>
+                    <comment>Automatically dispatch mapped SyncEngine automations on Magento product, customer, and order events.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="map_ttl" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Trigger Map Cache TTL (seconds)</label>
+                    <comment>How long the automation trigger map is cached before refreshing from SyncEngine.</comment>
+                </field>
+            </group>
             <group id="media_gallery_api" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Media Gallery API</label>
                 <field id="skip_unchanged" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
