@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="catalog_product_save_after">
+        <observer name="syncengine_trigger_catalog_product_save_after" instance="SyncEngine\Connector\Observer\ProductSaveObserver" />
+    </event>
+    <event name="catalog_product_delete_before">
+        <observer name="syncengine_trigger_catalog_product_delete_before" instance="SyncEngine\Connector\Observer\ProductDeleteObserver" />
+    </event>
+    <event name="customer_save_after_data_object">
+        <observer name="syncengine_trigger_customer_save_after_data_object" instance="SyncEngine\Connector\Observer\CustomerSaveObserver" />
+    </event>
+    <event name="customer_delete_after_data_object">
+        <observer name="syncengine_trigger_customer_delete_after_data_object" instance="SyncEngine\Connector\Observer\CustomerDeleteObserver" />
+    </event>
+    <event name="sales_order_save_after">
+        <observer name="syncengine_trigger_sales_order_save_after" instance="SyncEngine\Connector\Observer\OrderSaveObserver" />
+    </event>
+    <event name="sales_order_delete_before">
+        <observer name="syncengine_trigger_sales_order_delete_before" instance="SyncEngine\Connector\Observer\OrderDeleteObserver" />
+    </event>
+</config>
