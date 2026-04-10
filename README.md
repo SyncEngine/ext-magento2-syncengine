@@ -5,4 +5,6 @@ Magento 2 plugin to enhance integration for SyncEngine
 ## Features
 
 - [x] Adds full URL and relative path support to product Media Gallery API endpoints instead of base64 only.
-- [ ] Trigger endpoints based on events.
+- [x] Connect to SyncEngine API from Magento admin configuration.
+- [x] Fetch automations and connections from SyncEngine and auto-map trigger blueprints to local Magento events.
+- [x] Dispatch mapped endpoints for Magento product, customer, and order create/update/delete events.
