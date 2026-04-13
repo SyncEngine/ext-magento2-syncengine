@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="SyncEngine\Connector\Api\StatusInterface" type="SyncEngine\Connector\Model\StatusService"/>
     <preference for="SyncEngine\Connector\Api\RefreshInterface" type="SyncEngine\Connector\Model\RefreshService"/>
     <type name="Magento\Catalog\Model\ProductRepository\MediaGalleryProcessor">
         <plugin name="syncengine-media-gallery-processor" type="SyncEngine\Connector\Plugin\Model\MediaGalleryProcessorPlugin" sortOrder="1"/>
