@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SyncEngine\Connector\Service;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\StoreManagerInterface;
 use SyncEngine\Connector\Api\Client;
 use SyncEngine\Connector\Helper\Data;
@@ -81,6 +82,7 @@ class MagentoPlatformService extends AbstractPlatformService
         }
 
         $ids = [];
+        $refs = [];
         foreach ($connections as $connection) {
             if (!is_array($connection)) {
                 continue;
@@ -97,7 +99,15 @@ class MagentoPlatformService extends AbstractPlatformService
             $host = $this->normalizeStoreHost((string)($webservice['host'] ?? ''));
             if ($id > 0 && $host !== '' && in_array($host, $localHosts, true)) {
                 $ids[] = $id;
+                $ref = trim((string)($connection['ref'] ?? ''));
+                if ($ref !== '') {
+                    $refs[] = $ref;
+                }
             }
+        }
+
+        if ($refs !== []) {
+            ObjectManager::getInstance()->get(RefreshTrustService::class)->rememberConnectionRefs($refs);
         }
 
         return array_values(array_unique($ids));
