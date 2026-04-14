@@ -30,26 +30,54 @@ Magento 2 extension that enhances integration between Magento 2 and a [SyncEngin
 
 ## Installation
 
-1. Install the extension via Composer:
+> [!IMPORTANT]
+> This package is not yet available on Packagist. Add the SyncEngine repository to your root `composer.json` first (or install from a local path), then run `composer require`.
+
+1. Add a Composer repository for the module in your Magento root `composer.json`:
+     ```json
+     {
+         "repositories": [
+             {
+                 "type": "vcs",
+                 "url": "git@github.com:SyncEngine/ext-magento2-syncengine.git"
+             }
+         ]
+     }
+     ```
+     If you keep the extension locally, you can use a path repository instead:
+     ```json
+     {
+         "repositories": [
+             {
+                 "type": "path",
+                 "url": "../SyncEngine/Connector",
+                 "options": {
+                     "symlink": true
+                 }
+             }
+         ]
+     }
+     ```
+2. Install the extension via Composer:
    ```bash
-   composer require syncengine/connector
+   composer require syncengine/ext-magento2
    ```
-2. Enable the module:
+3. Enable the module:
    ```bash
    bin/magento module:enable SyncEngine_Connector
    bin/magento setup:upgrade
    ```
-3. Recompile if in production mode:
+4. Recompile if in production mode:
    ```bash
    bin/magento setup:di:compile
    ```
-4. Navigate to **Stores → Configuration → SyncEngine → Connector** (or **System → Configuration** in older Magento UI).
-5. Configure the connector:
+5. Navigate to **Stores → Configuration → SyncEngine → Connector** (or **System → Configuration** in older Magento UI).
+6. Configure the connector:
    - **SyncEngine Host** — Full URL of your SyncEngine instance (e.g., `https://syncengine.example.com`)
    - **SyncEngine Token** — API token with read access to automations and connections
    - **Auth Header** (optional) — Custom authentication header name. Defaults to `Authorization: Bearer <token>` when empty.
-6. Toggle **Enable trigger dispatching** to **Yes**.
-7. Click **Save Config**. The module will immediately attempt to connect and discover automations.
+7. Toggle **Enable trigger dispatching** to **Yes**.
+8. Click **Save Config**. The module will immediately attempt to connect and discover automations.
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "name": "syncengine/connector",
+  "name": "syncengine/ext-magento2",
   "description": "Magento 2 SyncEngine connector that extends media API image handling and adds auto-mapped event triggers with real-time SyncEngine dispatch debugging.",
   "type": "magento2-module",
   "version": "1.0.0",
