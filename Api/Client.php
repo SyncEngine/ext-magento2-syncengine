@@ -12,6 +12,13 @@ class Client
 {
     private const CACHE_STATUS = 'syncengine_api_status';
     private const CACHE_ENDPOINTS = 'syncengine_api_endpoints';
+    private const LOCAL_DEV_HOSTS = [
+        'localhost',
+        '127.0.0.1',
+        '::1',
+        'host.docker.internal',
+        'gateway.docker.internal',
+    ];
 
     private string $host;
     private string $token;
@@ -155,6 +162,11 @@ class Client
             $this->curl->setHeaders($headers);
         }
 
+        $host = (string) (parse_url($this->host, PHP_URL_HOST) ?? '');
+        $isLocalDevHost = $this->isLocalDevHost($host);
+        $this->curl->setOption(CURLOPT_SSL_VERIFYPEER, !$isLocalDevHost);
+        $this->curl->setOption(CURLOPT_SSL_VERIFYHOST, $isLocalDevHost ? 0 : 2);
+
         $query = (array)($options['query'] ?? []);
         if ($query !== []) {
             $url .= (str_contains($url, '?') ? '&' : '?') . http_build_query($query);
@@ -197,6 +209,23 @@ class Client
 
         $decoded = $this->decodeBody($content);
         return is_array($decoded) ? $decoded : [];
+    }
+
+    private function isLocalDevHost(string $host): bool
+    {
+        $host = strtolower(trim($host));
+        if ($host === '') {
+            return false;
+        }
+
+        if (in_array($host, self::LOCAL_DEV_HOSTS, true)) {
+            return true;
+        }
+
+        return str_ends_with($host, '.ddev.site')
+            || str_ends_with($host, '.localhost')
+            || str_ends_with($host, '.local')
+            || str_ends_with($host, '.test');
     }
 
     private function decodeBody(string $content): array|string
