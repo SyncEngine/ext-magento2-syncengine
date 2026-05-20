@@ -112,18 +112,22 @@ class Client
         return $this->triggerEndpoint($endpoint, [], 'execute');
     }
 
-    public function triggerEndpoint(string $endpoint, array $payload = [], string $action = 'execute'): array
+    public function triggerEndpoint(string $endpoint, array $payload = [], string $action = ''): array
     {
         $endpoint = trim($endpoint, '/');
         $action = trim($action, '/');
 
-        if ($endpoint === '' || $action === '') {
-            return ['success' => false, 'error' => 'Invalid endpoint action request.'];
+        if ($endpoint === '') {
+            return ['success' => false, 'error' => 'Invalid endpoint.'];
+        }
+
+        if ($action) {
+            $endpoint .= '/' . $action;
         }
 
         try {
             $result = $this->request(
-                'endpoint/' . $endpoint . '/' . $action,
+                'endpoint/' . $endpoint,
                 'POST',
                 [
                     'version' => false,
