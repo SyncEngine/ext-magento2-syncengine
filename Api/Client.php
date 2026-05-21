@@ -107,6 +107,56 @@ class Client
         return $result;
     }
 
+    public function getEndpointStatus(string $endpoint, bool $refresh = false): array
+    {
+        $endpoint = trim($endpoint, '/');
+        if ($endpoint === '') {
+            return ['success' => false, 'error' => 'Invalid endpoint.', 'status' => 'unknown'];
+        }
+
+        $cacheKey = 'syncengine_endpoint_status_' . md5($endpoint);
+
+        if (!$refresh) {
+            $cached = $this->cache->load($cacheKey);
+            if (is_string($cached) && $cached !== '') {
+                try {
+                    $decoded = $this->serializer->unserialize($cached);
+                    if (is_array($decoded)) {
+                        return $decoded;
+                    }
+                } catch (\Throwable) {
+                    // Ignore stale cache payloads.
+                }
+            }
+        }
+
+        try {
+            $result = $this->request('endpoint/' . $endpoint . '/status', 'GET', ['version' => false]);
+
+            if (!is_array($result)) {
+                $result = [
+                    'success' => false,
+                    'error' => 'Invalid endpoint status response.',
+                    'status' => 'unknown',
+                ];
+            } else {
+                $result['success'] = true;
+            }
+        } catch (\Throwable $e) {
+            $result = [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'status' => 'unknown',
+            ];
+        }
+
+        if ($result['success'] ?? false) {
+            $this->cache->save($this->serializer->serialize($result), $cacheKey, [], 10);
+        }
+
+        return $result;
+    }
+
     public function executeEndpoint(string $endpoint): array
     {
         return $this->triggerEndpoint($endpoint, [], 'execute');
