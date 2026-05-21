@@ -12,7 +12,7 @@ use SyncEngine\Connector\Service\ClientService;
 
 class GetEndpointStatus extends Action
 {
-    public const ADMIN_RESOURCE = 'SyncEngine_Connector::trigger_debug';
+    public const ADMIN_RESOURCE = 'SyncEngine_Connector::connector';
 
     public function __construct(
         Context $context,

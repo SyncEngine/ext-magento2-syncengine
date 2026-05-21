@@ -10,7 +10,7 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Index extends Action
 {
-    public const ADMIN_RESOURCE = 'SyncEngine_Connector::trigger_debug';
+    public const ADMIN_RESOURCE = 'SyncEngine_Connector::connector';
 
     public function __construct(
         Context $context,
@@ -22,8 +22,8 @@ class Index extends Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->setActiveMenu('SyncEngine_Connector::trigger_debug');
-        $resultPage->getConfig()->getTitle()->prepend(__('SyncEngine Trigger Debug'));
+        $resultPage->setActiveMenu('SyncEngine_Connector::connector');
+        $resultPage->getConfig()->getTitle()->prepend(__('SyncEngine Connector'));
 
         return $resultPage;
     }

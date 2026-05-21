@@ -9,7 +9,7 @@ use SyncEngine\Connector\Service\MagentoPlatformService;
 
 class RefreshMap extends Action
 {
-    public const ADMIN_RESOURCE = 'SyncEngine_Connector::trigger_debug';
+    public const ADMIN_RESOURCE = 'SyncEngine_Connector::connector';
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
