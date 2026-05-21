@@ -3,6 +3,9 @@
 $triggerMap = $block->getTriggerMap();
 $dispatchLog = $block->getDispatchLog();
 $status = $block->escapeHtml($block->getStatus());
+$endpoints = $block->getEndpoints();
+$ajaxUrl = $block->escapeUrl($block->getGetEndpointStatusUrl());
+$formKey = $block->escapeHtmlAttr($block->getFormKey());
 ?>
 <div class="admin__page-section">
     <div class="admin__page-section-title">
@@ -26,6 +29,42 @@ $status = $block->escapeHtml($block->getStatus());
             </button>
         </form>
     </div>
+
+    <?php if (!empty($endpoints)): ?>
+    <div class="admin__page-section-item" style="margin-top:20px;">
+        <h3>Endpoint Status</h3>
+        <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
+            <table class="data-grid">
+                <thead>
+                <tr>
+                    <th class="data-grid-th">Name</th>
+                    <th class="data-grid-th">Endpoint</th>
+                    <th class="data-grid-th">Status</th>
+                    <th class="data-grid-th">Trace</th>
+                    <th class="data-grid-th">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($endpoints as $endpoint): ?>
+                    <?php
+                    $endpointSlug = trim((string)($endpoint['endpoint'] ?? ''));
+                    ?>
+                    <tr class="syncengine-endpoint-row" data-endpoint="<?= $block->escapeHtmlAttr($endpointSlug) ?>">
+                        <td><?= $block->escapeHtml((string)($endpoint['name'] ?? $endpointSlug)) ?></td>
+                        <td><code><?= $block->escapeHtml($endpointSlug) ?></code></td>
+                        <td class="syncengine-status-cell"><em>not loaded</em></td>
+                        <td class="syncengine-trace-cell"></td>
+                        <td>
+                            <button class="action-secondary syncengine-load-status-btn" type="button" data-endpoint="<?= $block->escapeHtmlAttr($endpointSlug) ?>" data-form-key="<?= $formKey ?>">Load status</button>
+                            <a class="action-secondary" href="<?= $block->escapeUrl($block->getUrl('syncengine_connector/debug/refreshMap', ['endpoint' => $endpointSlug])) ?>" style="margin-left:5px;">Execute</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="admin__page-section-item" style="margin-top:20px;">
         <h3>Trigger Endpoint Map</h3>
@@ -70,3 +109,70 @@ $status = $block->escapeHtml($block->getStatus());
         <?php endif; ?>
     </div>
 </div>
+
+<script type="text/javascript">
+require(['jquery'], function($) {
+    $(document).ready(function() {
+        const ajaxUrl = <?= json_encode($ajaxUrl) ?>;
+
+        $('.syncengine-load-status-btn').on('click', function(e) {
+            e.preventDefault();
+            const $btn = $(this);
+            const $row = $btn.closest('tr');
+            const endpoint = $btn.data('endpoint');
+            const formKey = $btn.data('form-key');
+            const originalText = $btn.text();
+
+            $btn.prop('disabled', true);
+            $btn.text('Loading...');
+
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    endpoint: endpoint,
+                    form_key: formKey
+                },
+                success: function(response) {
+                    if (response.success) {
+                        const data = response.data || {};
+                        let statusLabel = data.status || 'unknown';
+
+                        if (data.message) {
+                            statusLabel += ' - ' + data.message;
+                        }
+                        if (data.error) {
+                            statusLabel += ' - ' + data.error;
+                        }
+
+                        // Build trace counters
+                        const runningCount = Array.isArray(data.running) ? data.running.length : 0;
+                        const scheduledCount = Array.isArray(data.scheduled) ? data.scheduled.length : 0;
+                        const queuedCount = Array.isArray(data.queued) ? data.queued.length : 0;
+
+                        let traceLabel = '';
+                        if (runningCount > 0) traceLabel += 'running: ' + runningCount;
+                        if (scheduledCount > 0) traceLabel += (traceLabel ? ' | ' : '') + 'scheduled: ' + scheduledCount;
+                        if (queuedCount > 0) traceLabel += (traceLabel ? ' | ' : '') + 'queued: ' + queuedCount;
+
+                        $row.find('.syncengine-status-cell').text(statusLabel);
+                        $row.find('.syncengine-trace-cell').text(traceLabel || '—');
+                        $btn.text('Refresh status');
+                    } else {
+                        const errorMsg = response.message || 'Failed to load status';
+                        $row.find('.syncengine-status-cell').text('Error: ' + errorMsg);
+                    }
+                    $btn.prop('disabled', false);
+                },
+                error: function(xhr, status, error) {
+                    $row.find('.syncengine-status-cell').text('Error: ' + error);
+                    $btn.prop('disabled', false);
+                    $btn.text(originalText);
+                }
+            });
+        });
+    });
+});
+</script>
+

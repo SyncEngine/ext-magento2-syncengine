@@ -44,6 +44,17 @@ class DebugPage extends Template
         return $this->dispatchLogService->getLatest(50);
     }
 
+    public function getEndpoints(): array
+    {
+        $client = $this->clientService->getClient();
+        if (!$client) {
+            return [];
+        }
+
+        $endpoints = $client->listEndpoints();
+        return is_array($endpoints) ? $endpoints : [];
+    }
+
     public function getRefreshMapUrl(): string
     {
         return $this->getUrl('syncengine_connector/debug/refreshMap');
@@ -52,5 +63,10 @@ class DebugPage extends Template
     public function getClearLogUrl(): string
     {
         return $this->getUrl('syncengine_connector/debug/clearLog');
+    }
+
+    public function getGetEndpointStatusUrl(): string
+    {
+        return $this->getUrl('syncengine_connector/debug/getendpointstatus');
     }
 }
