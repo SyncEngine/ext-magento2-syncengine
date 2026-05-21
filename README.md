@@ -198,7 +198,7 @@ When a throttle window is active, the endpoint returns `{"refreshed": false, "re
 
 ## Admin Debug UI
 
-Navigate to **System → Tools → SyncEngine Trigger Debug** to access:
+Navigate to **System → Tools → SyncEngine Connector** to access:
 
 - **Current Connection Status** — Shows if the Magento connection to SyncEngine is active
 - **Trigger Map Status** — Displays all discovered triggers and their mapped endpoints
