@@ -11,7 +11,7 @@ Magento 2 extension that enhances integration between Magento 2 and a [SyncEngin
 - **Intelligent trigger mapping** — Auto-discovers applicable automations from SyncEngine based on trigger blueprints and connection matching
 - **Auto-refresh mechanism** — Trigger endpoint map is refreshed when a Magento connection is tested or related automation is saved in SyncEngine
 - **Refresh trust & throttling** — Protects the plugin from request storms with tiered throttling based on request origin
-- **Admin debug UI** — Dedicated trigger dispatch debug page showing trigger map status, recent dispatch logs, and manual refresh controls
+- **Admin connector UI** — Tabbed SyncEngine Connector page with endpoint status loading, trace counters, trigger map inspection, and dispatch logs
 - **Developer extension points** — Code-level filters for modifying payloads and controlling dispatch behavior
 
 ---
@@ -196,15 +196,18 @@ When a throttle window is active, the endpoint returns `{"refreshed": false, "re
 
 ---
 
-## Admin Debug UI
+## Admin Connector
 
 Navigate to **System → Tools → SyncEngine Connector** to access:
 
 - **Current Connection Status** — Shows if the Magento connection to SyncEngine is active
+- **Endpoint Status** — Per-endpoint status loading via AJAX, with inline trace counters for `running`, `scheduled`, and `queued`
 - **Trigger Map Status** — Displays all discovered triggers and their mapped endpoints
 - **Manual Refresh** — Button to immediately refresh the trigger map cache
 - **Recent Dispatch Log** — List of recently triggered endpoints with timestamp and result
 - **Skip Log** — Events that were skipped due to configuration or filter conditions
+
+The page uses tabs to separate the endpoint status view from the trigger map and dispatch log details.
 
 ---
 
@@ -278,7 +281,7 @@ $this->dispatchLogService->getSkippedEvents(5);     // Last 5 skipped events
 4. **Trigger resolved** — Maps operation (new/updated/deleted) to trigger key
 5. **Endpoint lookup** — `MagentoPlatformService` fetches cached or refreshes trigger-to-endpoint map
 6. **Dispatch** — `EndpointDispatcherService` calls each matched endpoint with the payload
-7. **Logging** — `DispatchLogService` records the dispatch result for admin debugging
+7. **Logging** — `DispatchLogService` records the dispatch result for admin review
 
 ---
 
